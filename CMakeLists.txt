@@ -9,10 +9,10 @@ include_directories(include)
 
 add_subdirectory(src)
 
-add_llvm_tool(Cxt001
+add_llvm_tool(cxt1110
   Cxt001.cpp
   )
 
-target_link_libraries(Cxt001
-  Cxt001Pass
+target_link_libraries(cxt1110
+  cxt1110Pass
   )
