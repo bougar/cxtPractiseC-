@@ -2,7 +2,7 @@
 
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Support/raw_ostream.h"
-
+///Mi primer doxygen
 using namespace llvm;
 
 char Cxt001Pass::ID = 0;
@@ -54,6 +54,7 @@ void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "Number of subs: " << subs << "\n";
   O << "Number of multiplications: " << muls << "\n";
   O << "Number of loops: " << totalLoops << "\n";
+  O << "Number of blocks: " << totalBlocks << "\n";
   O << "Number of blocks: " << totalBlocks << "\n";
   O << "Number of instructions: " << totalInstructions << "\n";
 }
