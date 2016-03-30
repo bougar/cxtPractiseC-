@@ -5,8 +5,8 @@
  * tiny tool for quality assurance developed in the course 
  * "Calidade na Xestion TIC (CXT)" during 2015-2016 by the following
  * authors:
- * 1. Name & Email of first member of the lab group
- * 2. Name & Email of second member of the lab group
+ * 1. Name:Carlos Bouzón García, Email:carlos.bouzon.garcia@udc.es 
+ * 2. Name:Mario Alonso Saavedra, Email:mario.alonso.saavedra@udc.es 
  * 
  * Given a program written in the C/C++ programming language, the tool
  * computes the Key Performance Indicators (KPIs) shortly described 
