@@ -1,4 +1,0 @@
-Number of instructions per function.
-Check memory management (new/delete, malloc/free) inside a procedure.
-Analysis of floating-point instructions per function.
-Check unnused external libraries on a file.

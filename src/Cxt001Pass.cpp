@@ -1,5 +1,4 @@
 #include "Cxt001Pass.h"
-#include <iostream>
 
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Support/raw_ostream.h"
@@ -7,27 +6,8 @@
 using namespace llvm;
 using namespace std;
 
-struct flotantes {
-	int fadd;
-	int fmul;
-	int fsub;
-	int fdiv;
-	int frem;
-	int fcmp;
-	int ftotals;
-};
-
 char Cxt001Pass::ID = 0;
-struct fun_info{
-	flotantes f;
-	int funid;
-	int mallocs=0;
-	int frees=0;
-	std::string name;
-	unsigned funOps; //KPI_1: Operations per function counter
-};
-int funCounter = 1;
-std::vector<fun_info> functionOperationsVector;
+
 
 void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will not invalidate any analysis already built on the IR
@@ -36,24 +16,24 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
 
-void countAllocates(CallInst &call,fun_info &info){
+void countAllocates(CallInst &call,FunctionInfo &info){
 	Function * f= (call.getCalledFunction());
 	string str = f->getName();
 	if (str=="malloc")
-		info.mallocs++;
+		info.mem.mallocs++;
 	if (str=="free")
-		info.frees++;
+		info.mem.frees++;
 }
 
 bool Cxt001Pass::runOnFunction(Function &F) {
   LoopInfoWrapperPass &LIWP = getAnalysis<LoopInfoWrapperPass>();
   LoopInfo &LI = LIWP.getLoopInfo();
   
-  fun_info newtoken_KPI_1; //Element for funOpVector
-  newtoken_KPI_1.funid = funCounter;
+  FunctionInfo functionInfo; //Element for funOpVector
+  functionInfo.setFunId( funCounter );
   funCounter++;
-  newtoken_KPI_1.name = F.getName();
-  newtoken_KPI_1.funOps = 0; //KPI_1: Operations per function counter
+  functionInfo.setName ( F.getName() );
+  functionInfo.setFunOps( 0 ); //KPI_1: Operations per function counter
   
   unsigned op;
 
@@ -63,39 +43,39 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 	    switch(op) {
 				case Instruction::Call:
 					if ( CallInst *call = dyn_cast<CallInst>(&I) )
-						countAllocates(*call,newtoken_KPI_1);
+						countAllocates(*call,functionInfo);
 				break;
 				case Instruction::FMul:
-					newtoken_KPI_1.f.fmul++;
-					newtoken_KPI_1.f.ftotals++;
+					functionInfo.f.fmul++;
+					functionInfo.f.ftotals++;
 				break;
 				case Instruction::FAdd:
-					newtoken_KPI_1.f.fadd++;
-					newtoken_KPI_1.f.ftotals++;
+					functionInfo.f.fadd++;
+					functionInfo.f.ftotals++;
 				break;
 				case Instruction::FDiv:
-					newtoken_KPI_1.f.fdiv++;
-					newtoken_KPI_1.f.ftotals++;
+					functionInfo.f.fdiv++;
+					functionInfo.f.ftotals++;
 				break;
 				case Instruction::FRem:
-					newtoken_KPI_1.f.frem++;
-					newtoken_KPI_1.f.ftotals++;
+					functionInfo.f.frem++;
+					functionInfo.f.ftotals++;
 				break;
 				case Instruction::FSub:
-					newtoken_KPI_1.f.fsub++;
-					newtoken_KPI_1.f.ftotals++;
+					functionInfo.f.fsub++;
+					functionInfo.f.ftotals++;
 				break;
 				case Instruction::FCmp:
-					newtoken_KPI_1.f.fcmp++;
-					newtoken_KPI_1.f.ftotals++;
+					functionInfo.f.fcmp++;
+					functionInfo.f.ftotals++;
 				break;
 				default:
 				break;
       }
-      newtoken_KPI_1.funOps++; //KPI_1: Operations per function counter
+      functionInfo.increaseFunOps(); //KPI_1: Operations per function counter
     }
   }
-  functionOperationsVector.push_back(newtoken_KPI_1); //Insert in funOpVector 
+  functionOperationsVector.push_back(functionInfo); //Insert in funOpVector 
   return false;
 }
 
