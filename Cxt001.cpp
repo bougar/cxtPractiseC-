@@ -11,53 +11,10 @@
  * Given a program written in the C/C++ programming language, the tool
  * computes the Key Performance Indicators (KPIs) shortly described 
  * below (3 KPIs are mandatory; and 1 KPI is optional):
- * 1. Short description of the first KPI
- * 2. Short description of the second KPI
- * 3. Short description of the third KPI
- * 4. Short description of the fourth KPI (optional)
- * 
- * Candidate KPIs to be selected for implementation are briefly 
- * described below. Many of these KPIs have already been discussed in
- * the brainstorming session that took place at lecture time.
- * 
- * 1. Quality of the program in terms of size
- *    - Number of Source Lines Of Code (SLOC) of the whole program
- *    - Number of asembly Lines Of Code (LOC) of the whole program
- *      (stimated as lines of code in the LLVM intermediate representation)
- *    - Number of functions with <= 80 SLOC (or <= 200 LOC)
- *    - Number of loops with <= 80 SLOC (or <= 200 LOC)
- * 
- * 2. Quality of the program in terms of memory management
- *    - Number of memory accesses
- *    - Number of bytes (KB,MB,...) used by the program (memory consumption)
- *    - Number of malloc() calls with a mathcing free() call
- * 
- * 3. Quality of the program in terms of CPU instruction set architecture
- *    - Number of floating-point instructions
- *    - Number of integer instructions
- * 
- * 4. Quality of the program in terms of modularity
- *    - Number of global variables declared in the program
- *    - Number of object classes declared in the program
- *    - Number of calls to functions in the source code of the program
- *    - Number of calls to external functions in the source code of the program
- *    - Number of object classes with <= 80 SLOC (or <= 200 LOC)
- *    - Ratio of number of debug source code lines to source code lines
- *    - Ratio of number of I/O source code lines to source code lines
- * 
- * 5. Quality of the program in terms of documentation
- *    - Number of program variables that do not follow naming conventions
- *    - Number of function names that do not follow naming conventions
- *    - Number of object classes whose name does not follow naming conventions
- *    - Ratio of number of documentation lines to source code lines
- *    - Listing of external libraries used in the program
- *      (e.g., sockets, OpenMP, MPI)
- * 
- * 6. Quality of the program in terms of performance
- *    - Stimation of execution time consumed by the program (e.g., CPU time in seconds)
- *    - Stimation ofxecution time consumed by each function of the program
- *    - Stimation ofxecution time consumed by calls to external libraries
- *      (e.g., communications time, parallelization overhead time)
+ * 1. Number of instructions per function 
+ * 2. Check memory managemente (new/delete, malloc/free) inside a procedure 
+ * 3. Analysis of floating-poing instructions per function, giving a final analysis
+ * 4. Check Unused external libraries on a file 
  * 
  */
 
@@ -97,7 +54,6 @@ using namespace llvm;
 std::unique_ptr<Module> getModuleFromFile(const char *path) {
   LLVMContext &Context = llvm::getGlobalContext();
   SMDiagnostic Err;
-
   auto result = parseIRFile(path, Err, Context);
 
   if (Err.getSourceMgr()) {

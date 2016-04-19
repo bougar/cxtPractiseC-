@@ -7,9 +7,7 @@ public:
   static char ID;
 
   Cxt001Pass()
-      : FunctionPass(ID), totalFunctions(0), totalBlocks(0),
-        totalInstructions(0), totalLoops(0), adds(0), muls(0),
-	subs(0), others(0) {}
+      : FunctionPass(ID) {};
 
   void getAnalysisUsage(llvm::AnalysisUsage &AU) const override;
 
@@ -17,13 +15,4 @@ public:
 
   void print(llvm::raw_ostream &O, const llvm::Module *M) const override;
 
-private:
-  int totalFunctions;
-  int totalBlocks;
-  int totalInstructions;
-  int totalLoops;
-  int adds;
-  int muls;
-  int subs;
-  int others;
 };

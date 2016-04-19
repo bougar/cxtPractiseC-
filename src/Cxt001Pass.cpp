@@ -1,4 +1,5 @@
 #include "Cxt001Pass.h"
+#include <iostream>
 
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Support/raw_ostream.h"
@@ -6,9 +7,22 @@
 using namespace llvm;
 using namespace std;
 
+struct flotantes {
+	int fadd;
+	int fmul;
+	int fsub;
+	int fdiv;
+	int frem;
+	int fcmp;
+	int ftotals;
+};
+
 char Cxt001Pass::ID = 0;
 struct fun_info{
+	flotantes f;
 	int funid;
+	int mallocs=0;
+	int frees=0;
 	std::string name;
 	unsigned funOps; //KPI_1: Operations per function counter
 };
@@ -22,6 +36,15 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
 
+void countAllocates(CallInst &call,fun_info &info){
+	Function * f= (call.getCalledFunction());
+	string str = f->getName();
+	if (str=="malloc")
+		info.mallocs++;
+	if (str=="free")
+		info.frees++;
+}
+
 bool Cxt001Pass::runOnFunction(Function &F) {
   LoopInfoWrapperPass &LIWP = getAnalysis<LoopInfoWrapperPass>();
   LoopInfo &LI = LIWP.getLoopInfo();
@@ -33,38 +56,50 @@ bool Cxt001Pass::runOnFunction(Function &F) {
   newtoken_KPI_1.funOps = 0; //KPI_1: Operations per function counter
   
   unsigned op;
-  for (Loop *L : LI) {
-    totalLoops++;
-  }
 
   for (BasicBlock &BB : F) {
     for (Instruction &I : BB) {
       op=I.getOpcode();
-      switch(op) {
-	case Instruction::Add:
-	  adds++;
-	  break;
-	case Instruction::Sub:
-	  subs++;
-	  break;
-	case Instruction::Mul:
-	  muls++;
-	  break;
-	default:
-	  others++;
-	  break;
+	    switch(op) {
+				case Instruction::Call:
+					if ( CallInst *call = dyn_cast<CallInst>(&I) )
+						countAllocates(*call,newtoken_KPI_1);
+				break;
+				case Instruction::FMul:
+					newtoken_KPI_1.f.fmul++;
+					newtoken_KPI_1.f.ftotals++;
+				break;
+				case Instruction::FAdd:
+					newtoken_KPI_1.f.fadd++;
+					newtoken_KPI_1.f.ftotals++;
+				break;
+				case Instruction::FDiv:
+					newtoken_KPI_1.f.fdiv++;
+					newtoken_KPI_1.f.ftotals++;
+				break;
+				case Instruction::FRem:
+					newtoken_KPI_1.f.frem++;
+					newtoken_KPI_1.f.ftotals++;
+				break;
+				case Instruction::FSub:
+					newtoken_KPI_1.f.fsub++;
+					newtoken_KPI_1.f.ftotals++;
+				break;
+				case Instruction::FCmp:
+					newtoken_KPI_1.f.fcmp++;
+					newtoken_KPI_1.f.ftotals++;
+				break;
+				default:
+				break;
       }
-      totalInstructions++; 
       newtoken_KPI_1.funOps++; //KPI_1: Operations per function counter
     }
-    totalBlocks++;
   }
   functionOperationsVector.push_back(newtoken_KPI_1); //Insert in funOpVector 
-  totalFunctions++;
-  
   return false;
 }
 
+/*
 void print_kpi_1(raw_ostream &O){
 	fun_info aux;
 	int i, l= functionOperationsVector.size();
@@ -75,20 +110,13 @@ void print_kpi_1(raw_ostream &O){
 			O << "\tNº: " << aux.funid;
 			O << "  Function: " << aux.name << "\n";
 			O << "\tOperations: " << aux.funOps << "\n\n";
+			O << "\tmallocs Number: " << aux.mallocs << "\n\n";
+			O << "\tfrees Number: " << aux.frees << "\n\n";
+
 		}
 	O << "**************************************************\n";
 	}
-
+*/
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "For module: " << M->getName() << "\n";
-  O << "Number of functions: " << totalFunctions << "\n";
-  O << "Number of adds: " << adds << "\n";
-  O << "Number of subs: " << subs << "\n";
-  O << "Number of multiplications: " << muls << "\n";
-  O << "Number of loops: " << totalLoops << "\n";
-  O << "Number of blocks: " << totalBlocks << "\n";
-  O << "Number of blocks: " << totalBlocks << "\n";
-  O << "Number of instructions: " << totalInstructions << "\n\n";
-  O << "Featured KPI's: \n\n"; 
-  print_kpi_1(O);
 }
