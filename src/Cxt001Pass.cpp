@@ -6,6 +6,35 @@
 using namespace llvm;
 using namespace std;
 
+
+class function_info_t {
+	int funid = 0;
+	std::string name = "";
+	unsigned funOps = 0; //KPI_1: Operations per function counter
+	public:
+	void set_funid(int val){
+		funid = val;
+		}
+	void set_name(std::string val){
+		name = val;
+		}
+	void set_funOps(int val){
+		funOps =val;
+		}
+	int get_funid(){ return funid;}
+	std::string get_name(std::string val){return name;}
+	unsigned get_funOps(int val){return funOps;}
+	void increase_funOps(){funOps++;}
+	void printthis(raw_ostream &O){
+			O << "\tNº: " << funid;
+			O << "  Function: " << name << "\n";
+			O << "\tOperations: " << funOps << "\n\n";
+		}
+	
+};
+
+
+
 char Cxt001Pass::ID = 0;
 struct fun_info{
 	int funid;
@@ -71,10 +100,7 @@ void print_kpi_1(raw_ostream &O){
 	O << "Number of instructions per function: \n\n";
 	O << "**************************************************\n";
 	for(i=0; i<l; i++){
-			aux = functionOperationsVector.at(i);
-			O << "\tNº: " << aux.funid;
-			O << "  Function: " << aux.name << "\n";
-			O << "\tOperations: " << aux.funOps << "\n\n";
+		
 		}
 	O << "**************************************************\n";
 	}
