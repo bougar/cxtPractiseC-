@@ -1,11 +1,18 @@
 #include "Cxt001Pass.h"
-
+#include <iostream>
+#include "llvm/IR/Value.h"
+#include "llvm/ADT/Triple.h"
+#include "llvm/Analysis/MemoryBuiltins.h"
+#include "llvm/Analysis/TargetLibraryInfo.h"
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Support/raw_ostream.h"
 ///Mi primer doxygen
 using namespace llvm;
 using namespace std;
 
+int a;
+string b;
+Value *c=NULL;
 char Cxt001Pass::ID = 0;
 
 
@@ -15,35 +22,49 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will use the analysis LoopInfo
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
-
-void countAllocates(CallInst &call,FunctionInfo &info){
-	Function * f= (call.getCalledFunction());
-	string str = f->getName();
-	if (str=="malloc")
-		info.mem.mallocs++;
-	if (str=="free")
-		info.mem.frees++;
+Value * extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
+	const CallInst &call = *(extractMallocCall(val,&targetLibraryInfo));
+	for (Value::const_user_iterator UI = call.user_begin(),E = call.user_end();UI != E;){
+		if ( const Value *val =dyn_cast <Value>(*UI++)){
+			if (const BitCastInst *BCI = dyn_cast<BitCastInst>(val)) {
+				c=const_cast<Value *>(val);
+				b=val->getName();
+				cout << b << "\n";
+			}	
+		}
+	}
+	return NULL;
 }
 
+void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo){
+	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
+		extractValue(&val,targetLibraryInfo);
+		info.mem.mallocs++;
+	}
+	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
+		info.mem.frees++;
+	}
+	 	
+}
 bool Cxt001Pass::runOnFunction(Function &F) {
-  LoopInfoWrapperPass &LIWP = getAnalysis<LoopInfoWrapperPass>();
-  LoopInfo &LI = LIWP.getLoopInfo();
-  
   FunctionInfo functionInfo; //Element for funOpVector
   functionInfo.setFunId( funCounter );
   funCounter++;
   functionInfo.setName ( F.getName() );
   functionInfo.setFunOps( 0 ); //KPI_1: Operations per function counter
-  
   unsigned op;
-
   for (BasicBlock &BB : F) {
+		Module *M=BB.getModule();
+		Twine twine=Twine(M->getTargetTriple());
+		Triple t = Triple(twine);
+		TargetLibraryInfoImpl targetLibraryInfoImpl = TargetLibraryInfoImpl(t);
+		TargetLibraryInfo targetLibraryInfo = TargetLibraryInfo(targetLibraryInfoImpl);
     for (Instruction &I : BB) {
       op=I.getOpcode();
 	    switch(op) {
 				case Instruction::Call:
-					if ( CallInst *call = dyn_cast<CallInst>(&I) )
-						countAllocates(*call,functionInfo);
+					if ( Value *value = dyn_cast<Value>(&I) )
+						countAllocates(*value,functionInfo,targetLibraryInfo);
 				break;
 				case Instruction::FMul:
 					functionInfo.f.fmul++;
@@ -69,34 +90,29 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 					functionInfo.f.fcmp++;
 					functionInfo.f.ftotals++;
 				break;
+				case Instruction::Store:
+					 if (StoreInst *a = dyn_cast<StoreInst>(&I)){
+						 Value * v=a->getOperand(0);
+						if ( v == c )
+							cout << "culooooo";
+						else 
+							cout << "no hubo suerte";
+					}
+
+
+					
 				default:
-				break;
-      }
-      functionInfo.increaseFunOps(); //KPI_1: Operations per function counter
+				break; 
+		} 
+	functionInfo.increaseFunOps(); //KPI_1: Operations per function counter
     }
   }
   functionOperationsVector.push_back(functionInfo); //Insert in funOpVector 
   return false;
 }
 
-/*
-void print_kpi_1(raw_ostream &O){
-	fun_info aux;
-	int i, l= functionOperationsVector.size();
-	O << "Number of instructions per function: \n\n";
-	O << "**************************************************\n";
-	for(i=0; i<l; i++){
-			aux = functionOperationsVector.at(i);
-			O << "\tNº: " << aux.funid;
-			O << "  Function: " << aux.name << "\n";
-			O << "\tOperations: " << aux.funOps << "\n\n";
-			O << "\tmallocs Number: " << aux.mallocs << "\n\n";
-			O << "\tfrees Number: " << aux.frees << "\n\n";
-
-		}
-	O << "**************************************************\n";
-	}
-*/
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "For module: " << M->getName() << "\n";
+  O << "a value: " << b << "\n";
+  O << "a value: " << a << "\n";
 }
