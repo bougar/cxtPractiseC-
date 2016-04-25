@@ -2,6 +2,7 @@
 #include "llvm/Pass.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Function.h"
+#include <tuple>
 using namespace std;
 
 class Cxt001Pass : public llvm::FunctionPass {
@@ -20,5 +21,6 @@ public:
 	private:
 		vector<FunctionInfo> functionOperationsVector;	
 		int funCounter;
+		vector<tuple<llvm::CallInst *, llvm::CallInst *, llvm::Value *>> memoryVector;
 
 };
