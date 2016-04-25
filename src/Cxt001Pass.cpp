@@ -27,6 +27,7 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
 }
 Value * extractFreeValueFromLoad(Value * val){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
+		if ( (call->getOperand(0))->hasName() );
 		if (call->getArgOperand(0) == std::get<0>(auxFree)){
 			string a;
 			a = (get<1>(auxFree))->getName();
@@ -56,15 +57,17 @@ Value * extractMallocValueFromStore(Instruction &I){
 Value * extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
 	//tips: Look for the variable in the next store operation.
 	//(We need the bitcast temp variable).
-	if (const CallInst * call = dyn_cast<CallInst>(val) )
-			for (Value::const_user_iterator begin = call->user_begin(), end = call->user_end();
-				begin != end;){
+	if (const CallInst * call = dyn_cast<CallInst>(val) ){
+		aux = static_cast<Value *>(val);
+		for (Value::const_user_iterator begin = call->user_begin(), end = call->user_end();
+			begin != end;){
 				if (const BitCastInst *bitCastInst = dyn_cast<BitCastInst>(*begin++)) {
 					//We need store next value and math with the next store intructution in order
 					//to get a math with the variable
 					aux = static_cast<Value *>(const_cast<BitCastInst *>(bitCastInst));
 				}
 			}
+	}
 	return NULL; 
 }
 
