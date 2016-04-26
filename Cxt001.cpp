@@ -12,9 +12,15 @@
  * computes the Key Performance Indicators (KPIs) shortly described 
  * below (3 KPIs are mandatory; and 1 KPI is optional):
  * 1. Number of instructions per function 
- * 2. Check memory managemente (new/delete, malloc/free) inside a procedure 
- * 3. Analysis of floating-poing instructions per function, giving a final analysis
- * 4. Check Unused external libraries on a file 
+ * 2. Number of floating-poing instructions per function
+ * 3. Size of memory allocated dynamically (e.g. malloced/new'ed) per function
+ * ==>> Report as a table: function, kpi1, kpi2, ...
+ *
+ * 4. Report list of variables with matching malloc-free, per function
+ *    - Report as a table: function name, LOCs, FLOPs, memory consumption
+ *    - Interprocedural analysis of the code of the function, as well as the code of called functions 
+ *    - Design tests in C/C++ (check functionality)
+ *    - Internal run&test with your tests and with FOR, FOR2 & LULESH (check robustness)
  * 
  */
 
