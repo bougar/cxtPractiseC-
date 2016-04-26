@@ -1,0 +1,17 @@
+For module: ./examples/FOR2.ll
+Datos por funcion
+Function: foo
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: foo2
+Numero total de operaciones: 16
+Número total de operaciones en punto flotante: 0
+Function: foo3
+Numero total de operaciones: 11
+Número total de operaciones en punto flotante: 0
+
+Datos globales: 
+Número de instrucciones totales: 33
+Número de instrucciones en punto flotante: 0
+Media de instrucciones por función: 11
+Media de instrucciones en punto flotante por instrucción: 0
