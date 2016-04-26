@@ -1,5 +1,4 @@
 #include "Cxt001Pass.h"
-#include <iostream>
 #include "llvm/IR/Value.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/Analysis/MemoryBuiltins.h"
@@ -8,12 +7,10 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/Function.h"
 #include <tuple>
-///Mi primer doxygen
+#include <iostream>
+
 using namespace llvm;
 using namespace std;
-void imprimir (string a){
-	cout << a << "\n";
-}
 
 char Cxt001Pass::ID = 0;
 Value * aux=NULL;
@@ -25,6 +22,8 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will use the analysis LoopInfo
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
+
+///Extract the original free parameter.
 Value * extractFreeValueFromLoad(Value * val){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		if ( (call->getOperand(0))->hasName() );
@@ -36,7 +35,7 @@ Value * extractFreeValueFromLoad(Value * val){
 	}
 	return NULL;
 }
-
+///Extract the variable which is asigned to a malloc/new call
 Value * extractMallocValueFromStore(Instruction &I){
 	if ( StoreInst * store = dyn_cast<StoreInst>(&I) ){
 		if ( aux != NULL )
@@ -55,35 +54,32 @@ Value * extractMallocValueFromStore(Instruction &I){
 /// Then we will mathc it with the next store instrucction because this
 /// does not get the real variable. Just a temporary one
 Value * extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
-	//tips: Look for the variable in the next store operation.
-	//(We need the bitcast temp variable).
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		aux = static_cast<Value *>(val);
 		for (Value::const_user_iterator begin = call->user_begin(), end = call->user_end();
 			begin != end;){
 				if (const BitCastInst *bitCastInst = dyn_cast<BitCastInst>(*begin++)) {
-					//We need store next value and math with the next store intructution in order
-					//to get a math with the variable
 					aux = static_cast<Value *>(const_cast<BitCastInst *>(bitCastInst));
 				}
 			}
 	}
 	return NULL; 
 }
-
+///Check if a value corresponds to a malloc/new or free/delete call.
+///If so, we store the result.
 void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo){
-	//We need to know if it is a new or a malloc
 	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
 		extractValue(&val,targetLibraryInfo);
 		info.mem.mallocs++;
 	}
-	//We need to know if it is a free or a delete function
 	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
 		extractFreeValueFromLoad(&val);
 		info.mem.frees++;
 	}
 	 	
 }
+///Iterate over the function's instructions
+///to get useful information
 bool Cxt001Pass::runOnFunction(Function &F) {
   FunctionInfo functionInfo; //Element for funOpVector
   functionInfo.setFunId( funCounter );
@@ -145,13 +141,14 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 				default:
 				break; 
 		} 
-	functionInfo.increaseFunOps(); //KPI_1: Operations per function counter
+		functionInfo.increaseFunOps(); //KPI_1: Operations per function counter
     }
   }
   functionOperationsVector.push_back(functionInfo); //Insert in funOpVector 
   return false;
 }
 
+///Prints the useful class values
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "For module: " << M->getName() << "\n";
 }
