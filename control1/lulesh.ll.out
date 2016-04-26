@@ -1,0 +1,620 @@
+For module: ./examples/lulesh.ll
+Malloc: locDom
+Free: 
+Free: 
+Datos por funcion
+Function: __cxx_global_var_init
+Numero total de operaciones: 3
+Número total de operaciones en punto flotante: 0
+Function: _Z14CalcElemVolumePKdS0_S0_
+Numero total de operaciones: 83
+Número total de operaciones en punto flotante: 0
+Function: _ZL14CalcElemVolumedddddddddddddddddddddddd
+Numero total de operaciones: 407
+Número total de operaciones en punto flotante: 90
+Function: _Z22CalcKinematicsForElemsR6DomainPddi
+Numero total de operaciones: 225
+Número total de operaciones en punto flotante: 9
+Function: _ZN6Domain8nodelistEi
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZL29CollectDomainNodesToElemNodesR6DomainPKiPdS3_S3_
+Numero total de operaciones: 232
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain4voloEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1vEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain4delvEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZL28CalcElemCharacteristicLengthPKdS0_S0_d
+Numero total de operaciones: 271
+Número total de operaciones en punto flotante: 2
+Function: _ZN6Domain6arealgEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2xdEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2ydEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2zdEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZL32CalcElemShapeFunctionDerivativesPKdS0_S0_PA8_dPd
+Numero total de operaciones: 661
+Número total de operaciones en punto flotante: 151
+Function: _ZL24CalcElemVelocityGradientPKdS0_S0_PA8_S_dPd
+Numero total de operaciones: 531
+Número total de operaciones en punto flotante: 115
+Function: _ZN6Domain3dxxEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain3dyyEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain3dzzEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: main
+Numero total de operaciones: 215
+Número total de operaciones en punto flotante: 3
+Function: _ZN6Domain4timeEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain8stoptimeEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5cycleEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL13TimeIncrementR6Domain
+Numero total de operaciones: 156
+Número total de operaciones en punto flotante: 21
+Function: _ZL16LagrangeLeapFrogR6Domain
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain9deltatimeEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIiSaIiEEixEm
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1xEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1yEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1zEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEEixEm
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZL8AreaFacedddddddddddd
+Numero total de operaciones: 148
+Número total de operaciones en punto flotante: 41
+Function: _ZSt3maxIdERKT_S2_S2_
+Numero total de operaciones: 21
+Número total de operaciones en punto flotante: 1
+Function: _Z4SQRTd
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain7dtfixedEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain9dtcourantEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain7dthydroEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain15deltatimemultlbEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain15deltatimemultubEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5dtmaxEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL13LagrangeNodalR6Domain
+Numero total de operaciones: 37
+Número total de operaciones en punto flotante: 0
+Function: _ZL16LagrangeElementsR6Domaini
+Numero total de operaciones: 29
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain7numElemEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL27CalcTimeConstraintsForElemsR6Domain
+Numero total de operaciones: 51
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain5u_cutEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZL17CalcForceForNodesR6Domain
+Numero total de operaciones: 37
+Número total de operaciones en punto flotante: 0
+Function: _ZL24CalcAccelerationForNodesR6Domaini
+Numero total de operaciones: 59
+Número total de operaciones en punto flotante: 3
+Function: _ZN6Domain7numNodeEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL43ApplyAccelerationBoundaryConditionsForNodesR6Domain
+Numero total de operaciones: 96
+Número total de operaciones en punto flotante: 0
+Function: _ZL20CalcVelocityForNodesR6Domainddi
+Numero total de operaciones: 104
+Número total de operaciones en punto flotante: 9
+Function: _ZL20CalcPositionForNodesR6Domaindi
+Numero total de operaciones: 59
+Número total de operaciones en punto flotante: 6
+Function: _ZN6Domain2fxEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2fyEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2fzEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZL23CalcVolumeForceForElemsR6Domain
+Numero total de operaciones: 89
+Número total de operaciones en punto flotante: 1
+Function: _ZNK6Domain6hgcoefEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _Z8AllocateIdEPT_m
+Numero total de operaciones: 8
+Número total de operaciones en punto flotante: 0
+Function: _ZL23InitStressTermsForElemsR6DomainPdS1_S1_i
+Numero total de operaciones: 54
+Número total de operaciones en punto flotante: 2
+Function: _ZL23IntegrateStressForElemsR6DomainPdS1_S1_S1_ii
+Numero total de operaciones: 318
+Número total de operaciones en punto flotante: 6
+Function: _ZL28CalcHourglassControlForElemsR6DomainPdd
+Numero total de operaciones: 220
+Número total de operaciones en punto flotante: 3
+Function: _Z7ReleaseIdEvPPT_
+Numero total de operaciones: 15
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1pEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1qEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZL19CalcElemNodeNormalsPdS_S_PKdS1_S1_
+Numero total de operaciones: 412
+Número total de operaciones en punto flotante: 0
+Function: _ZL27SumElemStressesToNodeForcesPA8_KddddPdS2_S2_
+Numero total de operaciones: 76
+Número total de operaciones en punto flotante: 6
+Function: _ZN6Domain13nodeElemCountEi
+Numero total de operaciones: 22
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain18nodeElemCornerListEi
+Numero total de operaciones: 18
+Número total de operaciones en punto flotante: 0
+Function: _ZL17SumElemFaceNormalPdS_S_S_S_S_S_S_S_S_S_S_dddddddddddd
+Numero total de operaciones: 232
+Número total de operaciones en punto flotante: 48
+Function: _ZL24CalcElemVolumeDerivativePdS_S_PKdS1_S1_
+Numero total de operaciones: 507
+Número total de operaciones en punto flotante: 0
+Function: _ZL28CalcFBHourglassForceForElemsR6DomainPdS1_S1_S1_S1_S1_S1_dii
+Numero total de operaciones: 1526
+Número total de operaciones en punto flotante: 137
+Function: _ZL7VoluDerddddddddddddddddddPdS_S_
+Numero total de operaciones: 228
+Número total de operaciones en punto flotante: 74
+Function: _ZN6Domain2ssEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain8elemMassEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _Z4CBRTd
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL24CalcElemFBHourglassForcePdS_S_PA4_ddS_S_S_
+Numero total de operaciones: 510
+Número total de operaciones en punto flotante: 69
+Function: _ZN6Domain9nodalMassEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain3xddEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain3yddEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain3zddEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5sizeXEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain10symmXemptyEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5symmXEi
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain10symmYemptyEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5symmYEi
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain10symmZemptyEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5symmZEi
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt6vectorIiSaIiEE5emptyEv
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxxeqIPKiSt6vectorIiSaIiEEEEbRKNS_17__normal_iteratorIT_T0_EESB_
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt6vectorIiSaIiEE5beginEv
+Numero total de operaciones: 15
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt6vectorIiSaIiEE3endEv
+Numero total de operaciones: 15
+Número total de operaciones en punto flotante: 0
+Function: _ZNK9__gnu_cxx17__normal_iteratorIPKiSt6vectorIiSaIiEEE4baseEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx17__normal_iteratorIPKiSt6vectorIiSaIiEEEC2ERKS2_
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _Z4FABSd
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL20CalcLagrangeElementsR6DomainPd
+Numero total de operaciones: 103
+Número total de operaciones en punto flotante: 7
+Function: _ZL13CalcQForElemsR6DomainPd
+Numero total de operaciones: 92
+Número total de operaciones en punto flotante: 1
+Function: _ZL31ApplyMaterialPropertiesForElemsR6DomainPd
+Numero total de operaciones: 209
+Número total de operaciones en punto flotante: 9
+Function: _ZL21UpdateVolumesForElemsR6DomainPddi
+Numero total de operaciones: 51
+Número total de operaciones en punto flotante: 2
+Function: _ZNK6Domain5v_cutEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain15AllocateStrainsEi
+Numero total de operaciones: 20
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain4vdovEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain17DeallocateStrainsEv
+Numero total de operaciones: 11
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE6resizeEmd
+Numero total de operaciones: 39
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt6vectorIdSaIdEE4sizeEv
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE6insertEN9__gnu_cxx17__normal_iteratorIPdS1_EEmRKd
+Numero total de operaciones: 24
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE3endEv
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE15_M_erase_at_endEPd
+Numero total de operaciones: 21
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE14_M_fill_insertEN9__gnu_cxx17__normal_iteratorIPdS1_EEmRKd
+Numero total de operaciones: 295
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxxmiIPdSt6vectorIdSaIdEEEENS_17__normal_iteratorIT_T0_E15difference_typeERKS8_SB_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZSt22__uninitialized_move_aIPdS0_SaIdEET0_T_S3_S2_RT1_
+Numero total de operaciones: 18
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt12_Vector_baseIdSaIdEE19_M_get_Tp_allocatorEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZSt13copy_backwardIPdS0_ET0_T_S2_S1_
+Numero total de operaciones: 16
+Número total de operaciones en punto flotante: 0
+Function: _ZNK9__gnu_cxx17__normal_iteratorIPdSt6vectorIdSaIdEEE4baseEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZSt4fillIPddEvT_S1_RKT0_
+Numero total de operaciones: 16
+Número total de operaciones en punto flotante: 0
+Function: _ZSt24__uninitialized_fill_n_aIPdmddET_S1_T0_RKT1_RSaIT2_E
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt6vectorIdSaIdEE12_M_check_lenEmPKc
+Numero total de operaciones: 43
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE5beginEv
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt12_Vector_baseIdSaIdEE11_M_allocateEm
+Numero total de operaciones: 18
+Número total de operaciones en punto flotante: 0
+Function: _ZSt34__uninitialized_move_if_noexcept_aIPdS0_SaIdEET0_T_S3_S2_RT1_
+Numero total de operaciones: 18
+Número total de operaciones en punto flotante: 0
+Function: _ZSt8_DestroyIPddEvT_S1_RSaIT0_E
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt12_Vector_baseIdSaIdEE13_M_deallocateEPdm
+Numero total de operaciones: 20
+Número total de operaciones en punto flotante: 0
+Function: __clang_call_terminate
+Numero total de operaciones: 3
+Número total de operaciones en punto flotante: 0
+Function: _ZSt22__uninitialized_copy_aIPdS0_dET0_T_S2_S1_RSaIT1_E
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZSt18uninitialized_copyIPdS0_ET0_T_S2_S1_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt20__uninitialized_copyILb1EE13__uninit_copyIPdS2_EET0_T_S4_S3_
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZSt4copyIPdS0_ET0_T_S2_S1_
+Numero total de operaciones: 16
+Número total de operaciones en punto flotante: 0
+Function: _ZSt14__copy_move_a2ILb0EPdS0_ET1_T0_S2_S1_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZSt12__miter_baseIPdENSt11_Miter_baseIT_E13iterator_typeES2_
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZSt13__copy_move_aILb0EPdS0_ET1_T0_S2_S1_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZSt12__niter_baseIPdENSt11_Niter_baseIT_E13iterator_typeES2_
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt11__copy_moveILb0ELb1ESt26random_access_iterator_tagE8__copy_mIdEEPT_PKS3_S6_S4_
+Numero total de operaciones: 33
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt10_Iter_baseIPdLb0EE7_S_baseES0_
+Numero total de operaciones: 5
+Número total de operaciones en punto flotante: 0
+Function: _ZSt23__copy_move_backward_a2ILb0EPdS0_ET1_T0_S2_S1_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZSt22__copy_move_backward_aILb0EPdS0_ET1_T0_S2_S1_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt20__copy_move_backwardILb0ELb1ESt26random_access_iterator_tagE13__copy_move_bIdEEPT_PKS3_S6_S4_
+Numero total de operaciones: 37
+Número total de operaciones en punto flotante: 0
+Function: _ZSt8__fill_aIPddEN9__gnu_cxx11__enable_ifIXsr11__is_scalarIT0_EE7__valueEvE6__typeET_S6_RKS3_
+Numero total de operaciones: 28
+Número total de operaciones en punto flotante: 0
+Function: _ZSt20uninitialized_fill_nIPdmdET_S1_T0_RKT1_
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt22__uninitialized_fill_nILb1EE15__uninit_fill_nIPdmdEET_S3_T0_RKT1_
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZSt6fill_nIPdmdET_S1_T0_RKT1_
+Numero total de operaciones: 15
+Número total de operaciones en punto flotante: 0
+Function: _ZSt10__fill_n_aIPdmdEN9__gnu_cxx11__enable_ifIXsr11__is_scalarIT1_EE7__valueET_E6__typeES4_T0_RKS3_
+Numero total de operaciones: 35
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt6vectorIdSaIdEE8max_sizeEv
+Numero total de operaciones: 8
+Número total de operaciones en punto flotante: 0
+Function: _ZSt3maxImERKT_S2_S2_
+Numero total de operaciones: 21
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx14__alloc_traitsISaIdEE8max_sizeERKS1_
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNKSt12_Vector_baseIdSaIdEE19_M_get_Tp_allocatorEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK9__gnu_cxx13new_allocatorIdE8max_sizeEv
+Numero total de operaciones: 5
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx17__normal_iteratorIPdSt6vectorIdSaIdEEEC2ERKS1_
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx14__alloc_traitsISaIdEE8allocateERS1_m
+Numero total de operaciones: 11
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx13new_allocatorIdE8allocateEmPKv
+Numero total de operaciones: 21
+Número total de operaciones en punto flotante: 0
+Function: _ZSt8_DestroyIPdEvT_S1_
+Numero total de operaciones: 10
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt12_Destroy_auxILb1EE9__destroyIPdEEvT_S3_
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx14__alloc_traitsISaIdEE10deallocateERS1_Pdm
+Numero total de operaciones: 15
+Número total de operaciones en punto flotante: 0
+Function: _ZN9__gnu_cxx13new_allocatorIdE10deallocateEPdm
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZNSt6vectorIdSaIdEE5clearEv
+Numero total de operaciones: 10
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5sizeYEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5sizeZEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain17AllocateGradientsEii
+Numero total de operaciones: 35
+Número total de operaciones en punto flotante: 0
+Function: _ZL31CalcMonotonicQGradientsForElemsR6DomainPd
+Numero total de operaciones: 984
+Número total de operaciones en punto flotante: 219
+Function: _ZL22CalcMonotonicQForElemsR6DomainPd
+Numero total de operaciones: 36
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain19DeallocateGradientsEv
+Numero total de operaciones: 17
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain5qstopEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain9delx_zetaEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain9delv_zetaEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain7delx_xiEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain7delv_xiEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain8delx_etaEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain8delv_etaEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain6numRegEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain11regElemSizeEi
+Numero total de operaciones: 13
+Número total de operaciones en punto flotante: 0
+Function: _ZL28CalcMonotonicQRegionForElemsR6DomainiPdd
+Numero total de operaciones: 531
+Número total de operaciones en punto flotante: 72
+Function: _ZNK6Domain18monoq_limiter_multEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain15monoq_max_slopeEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain9qlc_monoqEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain9qqc_monoqEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain11regElemlistEii
+Numero total de operaciones: 20
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain6elemBCEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain4lximEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain4lxipEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5letamEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain5letapEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain6lzetamEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain6lzetapEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2qqEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain2qlEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain7eosvminEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain7eosvmaxEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain11regElemlistEi
+Numero total de operaciones: 14
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain4costEv
+Numero total de operaciones: 6
+Número total de operaciones en punto flotante: 0
+Function: _ZL15EvalEOSForElemsR6DomainPdiPii
+Numero total de operaciones: 498
+Número total de operaciones en punto flotante: 10
+Function: _ZNK6Domain5e_cutEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain5p_cutEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain5ss4o3Ev
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain5q_cutEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain4pminEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain4eminEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZNK6Domain7refdensEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZN6Domain1eEi
+Numero total de operaciones: 12
+Número total de operaciones en punto flotante: 0
+Function: _ZL18CalcEnergyForElemsPdS_S_S_S_S_S_S_S_S_S_S_S_dddddS_S_ddiPi
+Numero total de operaciones: 666
+Número total de operaciones en punto flotante: 64
+Function: _ZL22CalcSoundSpeedForElemsR6DomainPddS1_S1_S1_S1_diPi
+Numero total de operaciones: 106
+Número total de operaciones en punto flotante: 7
+Function: _ZL20CalcPressureForElemsPdS_S_S_S_S_dddiPi
+Numero total de operaciones: 150
+Número total de operaciones en punto flotante: 6
+Function: _ZL29CalcCourantConstraintForElemsR6DomainiPidRd
+Numero total de operaciones: 184
+Número total de operaciones en punto flotante: 13
+Function: _ZNK6Domain3qqcEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _ZL27CalcHydroConstraintForElemsR6DomainiPidRd
+Numero total de operaciones: 135
+Número total de operaciones en punto flotante: 5
+Function: _ZNK6Domain7dvovmaxEv
+Numero total de operaciones: 7
+Número total de operaciones en punto flotante: 0
+Function: _GLOBAL__sub_I_lulesh.cc
+Numero total de operaciones: 2
+Número total de operaciones en punto flotante: 0
+
+Datos globales: 
+Número de instrucciones totales: 13580
+Número de instrucciones en punto flotante: 1212
+Media de instrucciones por función: 66
+Media de instrucciones en punto flotante por instrucción: 5
