@@ -23,6 +23,7 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
 
+
 ///Extract the original free parameter.
 Value * extractFreeValueFromLoad(Value * val){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
@@ -53,7 +54,7 @@ Value * extractMallocValueFromStore(Instruction &I){
 /// Get the variable which store malloc pointer result
 /// Then we will mathc it with the next store instrucction because this
 /// does not get the real variable. Just a temporary one
-Value * extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
+void extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		aux = static_cast<Value *>(val);
 		for (Value::const_user_iterator begin = call->user_begin(), end = call->user_end();
@@ -63,18 +64,15 @@ Value * extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
 				}
 			}
 	}
-	return NULL; 
 }
 ///Check if a value corresponds to a malloc/new or free/delete call.
 ///If so, we store the result.
 void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo){
 	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
 		extractValue(&val,targetLibraryInfo);
-		info.mem.mallocs++;
 	}
 	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
 		extractFreeValueFromLoad(&val);
-		info.mem.frees++;
 	}
 	 	
 }
@@ -148,6 +146,25 @@ bool Cxt001Pass::runOnFunction(Function &F) {
   return false;
 }
 
+void Cxt001Pass::printTotals(){
+	int tops=0;
+	int fops=0;
+	int i=0;
+	cout << "Datos por funcion" << "\n";
+	for ( FunctionInfo f : functionOperationsVector ){
+		i++;
+		cout << "Function: " << f.getName() << "\n";
+		cout << "Numero total de operaciones: " << f.getFunOps() << "\n";
+		cout << "Número total de operaciones en punto flotante: " << f.f.ftotals << "\n";
+		tops+=f.getFunOps();
+		fops+=f.f.ftotals;
+	}
+	cout << "\n" <<  "Datos globales: " << "\n";
+	cout << "Número de instrucciones totales: " << tops << "\n";
+	cout << "Número de instrucciones en punto flotante: " << fops << "\n";
+	cout << "Media de instrucciones por función: " << tops/i << "\n";
+	cout << "Media de instrucciones en punto flotante por instrucción: " << fops/i << "\n";
+}
 ///Prints the useful class values
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "For module: " << M->getName() << "\n";
