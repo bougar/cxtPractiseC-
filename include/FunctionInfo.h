@@ -42,13 +42,13 @@ class FunctionInfo {
 			funOps = val;
 		}
 		int getFunId(){ return funId;}
-		string get_name(string val){return name;}
-		unsigned getFunOps(int val){return funOps;}
+		string getName(){return name;}
+		unsigned getFunOps(){return funOps;}
 		void increaseFunOps(){funOps++;}
 	/*
 	void print(raw_ostream &O){
 			O << "\tNº: " << funId;
-			O << "  Function: " << name << "\n";
+		O << "  Function: " << name << "\n";
 			O << "\tOperations: " << funOps << "\n\n";
 	}*/
 	

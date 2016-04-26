@@ -17,10 +17,11 @@ public:
   bool runOnFunction(llvm::Function &F) override;
 
   void print(llvm::raw_ostream &O, const llvm::Module *M) const override;
+	void printTotals();
+
 	
 	private:
 		vector<FunctionInfo> functionOperationsVector;	
 		int funCounter;
-		vector<tuple<llvm::CallInst *, llvm::CallInst *, llvm::Value *>> memoryVector;
-
+		vector<Memoria> memoryVector;
 };
