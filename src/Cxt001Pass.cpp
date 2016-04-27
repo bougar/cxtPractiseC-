@@ -27,7 +27,6 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
 ///Extract the original free parameter.
 Value * extractFreeValueFromLoad(Value * val){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
-		if ( (call->getOperand(0))->hasName() );
 		if (call->getArgOperand(0) == std::get<0>(auxFree)){
 			string a;
 			a = (get<1>(auxFree))->getName();
@@ -36,6 +35,7 @@ Value * extractFreeValueFromLoad(Value * val){
 	}
 	return NULL;
 }
+
 ///Extract the variable which is asigned to a malloc/new call
 Value * extractMallocValueFromStore(Instruction &I){
 	if ( StoreInst * store = dyn_cast<StoreInst>(&I) ){
@@ -51,6 +51,7 @@ Value * extractMallocValueFromStore(Instruction &I){
 	aux=NULL;
 	return NULL;
 }
+
 /// Get the variable which store malloc pointer result
 /// Then we will mathc it with the next store instrucction because this
 /// does not get the real variable. Just a temporary one
@@ -65,10 +66,17 @@ void extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
 			}
 	}
 }
+
 ///Check if a value corresponds to a malloc/new or free/delete call.
 ///If so, we store the result.
-void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo){
+void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo, const DataLayout &dataLayout){
 	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
+		if (CallInst * call = dyn_cast<CallInst>(&val) ){
+			Value * constant = call->getOperand(0);
+			if ( ConstantInt * cons= dyn_cast <ConstantInt>(constant) ){
+				cout << "El tamaño reservado para este malloc es de: " << cons->getSExtValue() << " Bytes\n";
+			}
+		}
 		extractValue(&val,targetLibraryInfo);
 	}
 	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
@@ -76,9 +84,12 @@ void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibr
 	}
 	 	
 }
+
 ///Iterate over the function's instructions
 ///to get useful information
 bool Cxt001Pass::runOnFunction(Function &F) {
+	TargetLibraryInfoImpl targetLibraryInfoImpl = TargetLibraryInfoImpl(triple);
+	TargetLibraryInfo targetLibraryInfo = TargetLibraryInfo(targetLibraryInfoImpl);
   FunctionInfo functionInfo; //Element for funOpVector
   functionInfo.setFunId( funCounter );
   funCounter++;
@@ -86,17 +97,12 @@ bool Cxt001Pass::runOnFunction(Function &F) {
   functionInfo.setFunOps( 0 ); //KPI_1: Operations per function counter
   unsigned op;
   for (BasicBlock &BB : F) {
-		Module *M=BB.getModule();
-		Twine twine=Twine(M->getTargetTriple());
-		Triple t = Triple(twine);
-		TargetLibraryInfoImpl targetLibraryInfoImpl = TargetLibraryInfoImpl(t);
-		TargetLibraryInfo targetLibraryInfo = TargetLibraryInfo(targetLibraryInfoImpl);
     for (Instruction &I : BB) {
       op=I.getOpcode();
 	    switch(op) {
 				case Instruction::Call:
 					if ( Value *value = dyn_cast<Value>(&I) )
-						countAllocates(*value,functionInfo,targetLibraryInfo);
+						countAllocates(*value,functionInfo,targetLibraryInfo,module->getDataLayout());
 				break;
 				case Instruction::FMul:
 					functionInfo.f.fmul++;
@@ -159,6 +165,7 @@ void Cxt001Pass::printTotals(){
 		tops+=f.getFunOps();
 		fops+=f.f.ftotals;
 	}
+
 	cout << "\n" <<  "Datos globales: " << "\n";
 	cout << "Número de instrucciones totales: " << tops << "\n";
 	cout << "Número de instrucciones en punto flotante: " << fops << "\n";

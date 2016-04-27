@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
   auto Mod = getModuleFromFile(argv[1]);
 
   // Needs to be a pointer because PassManager will delete it
-  Cxt001Pass *pass = new Cxt001Pass();
+  Cxt001Pass *pass = new Cxt001Pass(Mod.get());
   pm.add(pass);
   pm.run(*Mod);
 
