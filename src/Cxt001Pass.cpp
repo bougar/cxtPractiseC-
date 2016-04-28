@@ -1,4 +1,5 @@
 #include "Cxt001Pass.h"
+#include "VectorMemoryClass.h"
 #include "llvm/IR/Value.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/Analysis/MemoryBuiltins.h"
@@ -14,6 +15,11 @@ using namespace std;
 
 char Cxt001Pass::ID = 0;
 Value * aux=NULL;
+
+//With the next variable we trace the free value.
+//The second element of the tuple contains a program variable pointer
+//while the first contain a temporary value, which represent a pogram
+//vaeriable bitcased
 tuple<Value *,Value *> auxFree = tuple<Value *,Value *>(NULL,NULL); 
 
 void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
@@ -27,10 +33,10 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
 ///Extract the original free parameter.
 Value * extractFreeValueFromLoad(Value * val){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
+		if ((call->getArgOperand(0))->hasName())
+			return call->getArgOperand(0);
 		if (call->getArgOperand(0) == std::get<0>(auxFree)){
-			string a;
-			a = (get<1>(auxFree))->getName();
-			cout << "Free: " << a << "\n";
+			return std::get<1>(auxFree);
 		}
 	}
 	return NULL;
@@ -42,9 +48,6 @@ Value * extractMallocValueFromStore(Instruction &I){
 		if ( aux != NULL )
 			if ( aux == (store->getOperand(0) ) ) {
 				aux=NULL;
-				string a;
-				a = store->getOperand(1)->getName();
-				cout << "Malloc: " << a << "\n";  
 				return store->getOperand(1);
 			}
 	}
@@ -69,12 +72,13 @@ void extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
 
 ///Check if a value corresponds to a malloc/new or free/delete call.
 ///If so, we store the result.
-void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo, const DataLayout &dataLayout){
+///It update the size requested by mallocs in a function;
+void countMemoryFunctions(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo, const DataLayout &dataLayout){
 	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
 		if (CallInst * call = dyn_cast<CallInst>(&val) ){
 			Value * constant = call->getOperand(0);
 			if ( ConstantInt * cons= dyn_cast <ConstantInt>(constant) ){
-				cout << "El tamaño reservado para este malloc es de: " << cons->getSExtValue() << " Bytes\n";
+				info.mem.size+=cons->getSExtValue();
 			}
 		}
 		extractValue(&val,targetLibraryInfo);
@@ -102,7 +106,7 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 	    switch(op) {
 				case Instruction::Call:
 					if ( Value *value = dyn_cast<Value>(&I) )
-						countAllocates(*value,functionInfo,targetLibraryInfo,module->getDataLayout());
+						countMemoryFunctions(*value,functionInfo,targetLibraryInfo,module->getDataLayout());
 				break;
 				case Instruction::FMul:
 					functionInfo.f.fmul++;
@@ -155,6 +159,7 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 void Cxt001Pass::printTotals(){
 	int tops=0;
 	int fops=0;
+	int bytesTotales;
 	int i=0;
 	cout << "Datos por funcion" << "\n";
 	for ( FunctionInfo f : functionOperationsVector ){
@@ -162,11 +167,14 @@ void Cxt001Pass::printTotals(){
 		cout << "Function: " << f.getName() << "\n";
 		cout << "Numero total de operaciones: " << f.getFunOps() << "\n";
 		cout << "Número total de operaciones en punto flotante: " << f.f.ftotals << "\n";
+		cout << "Bytes reservados por la función: " << f.mem.size << "\n";
+		bytesTotales+=f.mem.size;
 		tops+=f.getFunOps();
 		fops+=f.f.ftotals;
 	}
 
 	cout << "\n" <<  "Datos globales: " << "\n";
+	cout << "Reserva de memoria total: " << bytesTotales << "\n";
 	cout << "Número de instrucciones totales: " << tops << "\n";
 	cout << "Número de instrucciones en punto flotante: " << fops << "\n";
 	cout << "Media de instrucciones por función: " << tops/i << "\n";

@@ -12,16 +12,21 @@ using namespace std;
 struct Memoria {
 	int mallocs;
 	int frees;
+	size_t size;
+	Memoria () : mallocs(0), frees(0), size(0) {};
 }; 
 
 struct Flotantes {
-	int fadd=0;
-	int fmul=0;
-	int fsub=0;
-	int fdiv=0;
-	int frem=0;
-	int fcmp=0;
-	int ftotals=0;
+	int fadd;
+	int fmul;
+	int fsub;
+	int fdiv;
+	int frem;
+	int fcmp;
+	int ftotals;
+	Flotantes(): fadd(0),fmul(0),fsub(0),
+	fdiv(0),frem(0),fcmp(0),ftotals(0) {};
+
 };
 
 class FunctionInfo {
@@ -45,11 +50,4 @@ class FunctionInfo {
 		string getName(){return name;}
 		unsigned getFunOps(){return funOps;}
 		void increaseFunOps(){funOps++;}
-	/*
-	void print(raw_ostream &O){
-			O << "\tNº: " << funId;
-		O << "  Function: " << name << "\n";
-			O << "\tOperations: " << funOps << "\n\n";
-	}*/
-	
 };
