@@ -1,5 +1,4 @@
 #include "Cxt001Pass.h"
-#include "VectorMemoryClass.h"
 #include "llvm/IR/Value.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/Analysis/MemoryBuiltins.h"
@@ -14,13 +13,13 @@ using namespace llvm;
 using namespace std;
 
 char Cxt001Pass::ID = 0;
-Value * aux=NULL;
+VectorMemoryClass vectorMemoryClass;
 
 //With the next variable we trace the free value.
 //The second element of the tuple contains a program variable pointer
 //while the first contain a temporary value, which represent a pogram
 //vaeriable bitcased
-tuple<Value *,Value *> auxFree = tuple<Value *,Value *>(NULL,NULL); 
+tuple< Value *,Value *,CallInst *> auxFree = tuple<Value *,Value *,CallInst *>(NULL,NULL,NULL); 
 
 void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will not invalidate any analysis already built on the IR
@@ -31,42 +30,44 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
 
 
 ///Extract the original free parameter.
-Value * extractFreeValueFromLoad(Value * val){
+void extractFreeValueFromLoad(Value * val,TargetLibraryInfo &targetLibraryInfo){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		if ((call->getArgOperand(0))->hasName())
-			return call->getArgOperand(0);
+			vectorMemoryClass.insertFree(call,call->getArgOperand(0),targetLibraryInfo);
 		if (call->getArgOperand(0) == std::get<0>(auxFree)){
-			return std::get<1>(auxFree);
+			vectorMemoryClass.insertFree(call,std::get<1>(auxFree),targetLibraryInfo);
 		}
 	}
-	return NULL;
 }
 
 ///Extract the variable which is asigned to a malloc/new call
 Value * extractMallocValueFromStore(Instruction &I){
-	if ( StoreInst * store = dyn_cast<StoreInst>(&I) ){
-		if ( aux != NULL )
-			if ( aux == (store->getOperand(0) ) ) {
-				aux=NULL;
-				return store->getOperand(1);
-			}
+	if (StoreInst * storeInst = dyn_cast<StoreInst>(&I)){
+		Value * operand0 = storeInst->getOperand(0);
+		Value * operand1 = storeInst->getOperand(1);
+		if ( vectorMemoryClass.insertMallocProgramVariable(operand0,operand1) )
+		{
+			string a = operand1->getName();	
+		}
 	}
-	aux=NULL;
-	return NULL;
 }
 
 /// Get the variable which store malloc pointer result
 /// Then we will mathc it with the next store instrucction because this
 /// does not get the real variable. Just a temporary one
-void extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
+void extractMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo){
+	Value * aux = NULL;
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		aux = static_cast<Value *>(val);
+		// Test if malloc need cast the returned pointer to the original variable, which 
+		// this pointer might be assigned. 
 		for (Value::const_user_iterator begin = call->user_begin(), end = call->user_end();
 			begin != end;){
 				if (const BitCastInst *bitCastInst = dyn_cast<BitCastInst>(*begin++)) {
 					aux = static_cast<Value *>(const_cast<BitCastInst *>(bitCastInst));
 				}
 			}
+		vectorMemoryClass.insertMalloc(call,aux,targetLibraryInfo);
 	}
 }
 
@@ -81,10 +82,10 @@ void countMemoryFunctions(Value &val,FunctionInfo &info, TargetLibraryInfo &targ
 				info.mem.size+=cons->getSExtValue();
 			}
 		}
-		extractValue(&val,targetLibraryInfo);
+		extractMallocValue(&val,targetLibraryInfo);
 	}
 	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
-		extractFreeValueFromLoad(&val);
+		extractFreeValueFromLoad(&val,targetLibraryInfo);
 	}
 	 	
 }
@@ -153,6 +154,7 @@ bool Cxt001Pass::runOnFunction(Function &F) {
     }
   }
   functionOperationsVector.push_back(functionInfo); //Insert in funOpVector 
+	vectorMemoryClass.debug();
   return false;
 }
 
