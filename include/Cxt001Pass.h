@@ -1,4 +1,5 @@
 #include "FunctionInfo.h"
+#include "VectorMemoryClass.h"
 #include "llvm/Pass.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/IR/Module.h"
