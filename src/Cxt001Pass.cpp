@@ -13,7 +13,6 @@ using namespace llvm;
 using namespace std;
 
 char Cxt001Pass::ID = 0;
-VectorMemoryClass vectorMemoryClass;
 
 //With the next variable we trace the free value.
 //The second element of the tuple contains a program variable pointer
@@ -30,32 +29,33 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
 
 
 ///Extract the original free parameter.
-void extractFreeValueFromLoad(Value * val,TargetLibraryInfo &targetLibraryInfo){
+void extractFreeValueFromLoad(Value * val,TargetLibraryInfo &targetLibraryInfo,FunctionInfo &info){
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		if ((call->getArgOperand(0))->hasName())
-			vectorMemoryClass.insertFree(call,call->getArgOperand(0),targetLibraryInfo);
+			info.vectorMemoryClass.insertFree(call,call->getArgOperand(0),targetLibraryInfo);
 		if (call->getArgOperand(0) == std::get<0>(auxFree)){
-			vectorMemoryClass.insertFree(call,std::get<1>(auxFree),targetLibraryInfo);
+			info.vectorMemoryClass.insertFree(call,std::get<1>(auxFree),targetLibraryInfo);
 		}
 	}
 }
 
 ///Extract the variable which is asigned to a malloc/new call
-Value * extractMallocValueFromStore(Instruction &I){
+Value * extractMallocValueFromStore(Instruction &I,FunctionInfo &info){
 	if (StoreInst * storeInst = dyn_cast<StoreInst>(&I)){
 		Value * operand0 = storeInst->getOperand(0);
 		Value * operand1 = storeInst->getOperand(1);
-		if ( vectorMemoryClass.insertMallocProgramVariable(operand0,operand1) )
+		if ( info.vectorMemoryClass.insertMallocProgramVariable(operand0,operand1) )
 		{
-			string a = operand1->getName();	
+			return operand1;	
 		}
 	}
+	return NULL;
 }
 
 /// Get the variable which store malloc pointer result
 /// Then we will mathc it with the next store instrucction because this
 /// does not get the real variable. Just a temporary one
-void extractMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo){
+void extractMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo,FunctionInfo &info){
 	Value * aux = NULL;
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		aux = static_cast<Value *>(val);
@@ -67,7 +67,7 @@ void extractMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo){
 					aux = static_cast<Value *>(const_cast<BitCastInst *>(bitCastInst));
 				}
 			}
-		vectorMemoryClass.insertMalloc(call,aux,targetLibraryInfo);
+		info.vectorMemoryClass.insertMalloc(call,aux,targetLibraryInfo);
 	}
 }
 
@@ -82,10 +82,10 @@ void countMemoryFunctions(Value &val,FunctionInfo &info, TargetLibraryInfo &targ
 				info.mem.size+=cons->getSExtValue();
 			}
 		}
-		extractMallocValue(&val,targetLibraryInfo);
+		extractMallocValue(&val,targetLibraryInfo,info);
 	}
 	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
-		extractFreeValueFromLoad(&val,targetLibraryInfo);
+		extractFreeValueFromLoad(&val,targetLibraryInfo,info);
 	}
 	 	
 }
@@ -146,7 +146,7 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 					}
 				break;
 				case Instruction::Store:
-					extractMallocValueFromStore(I);
+					extractMallocValueFromStore(I,functionInfo);
 				default:
 				break; 
 		} 
@@ -154,7 +154,7 @@ bool Cxt001Pass::runOnFunction(Function &F) {
     }
   }
   functionOperationsVector.push_back(functionInfo); //Insert in funOpVector 
-	vectorMemoryClass.debug();
+	functionInfo.vectorMemoryClass.debug();
   return false;
 }
 
