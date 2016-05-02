@@ -7,6 +7,7 @@
  * It also provides a method to print class data.
 */
 #include <iostream>
+#include "VectorMemoryClass.h"
 using namespace std;
 
 struct Memoria {
@@ -35,6 +36,7 @@ class FunctionInfo {
 		string name; 
 		unsigned funOps = 0; //KPI_1: Operations per function counter
 	public:
+		VectorMemoryClass vectorMemoryClass;
 		Flotantes f;
 		Memoria mem;	
 		void setFunId(int val){
