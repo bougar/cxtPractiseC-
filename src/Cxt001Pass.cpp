@@ -3,6 +3,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/Analysis/MemoryBuiltins.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
+#include "VariableMap.h"
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/Function.h"
@@ -11,10 +12,9 @@
 
 using namespace llvm;
 using namespace std;
-
+//The next variable store correspondences between temporary and not temporary variables
+VariableMap varmap;
 char Cxt001Pass::ID = 0;
-Value * aux=NULL;
-tuple<Value *,Value *> auxFree = tuple<Value *,Value *>(NULL,NULL); 
 
 void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will not invalidate any analysis already built on the IR
@@ -23,62 +23,114 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
 
-
-///Extract the original free parameter.
-Value * extractFreeValueFromLoad(Value * val){
-	if (const CallInst * call = dyn_cast<CallInst>(val) ){
-		if ( (call->getOperand(0))->hasName() );
-		if (call->getArgOperand(0) == std::get<0>(auxFree)){
-			string a;
-			a = (get<1>(auxFree))->getName();
-			cout << "Free: " << a << "\n";
-		}
-	}
-	return NULL;
-}
-///Extract the variable which is asigned to a malloc/new call
-Value * extractMallocValueFromStore(Instruction &I){
-	if ( StoreInst * store = dyn_cast<StoreInst>(&I) ){
-		if ( aux != NULL )
-			if ( aux == (store->getOperand(0) ) ) {
-				aux=NULL;
-				string a;
-				a = store->getOperand(1)->getName();
-				cout << "Malloc: " << a << "\n";  
-				return store->getOperand(1);
-			}
-	}
-	aux=NULL;
-	return NULL;
-}
-/// Get the variable which store malloc pointer result
-/// Then we will mathc it with the next store instrucction because this
-/// does not get the real variable. Just a temporary one
-void extractValue(Value *val,TargetLibraryInfo targetLibraryInfo){
+/**
+This procedure store the last instruction inside a Call.
+*/
+void bitcastMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo,FunctionInfo &info){
+	Value * aux = NULL;
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		aux = static_cast<Value *>(val);
+		// Test if malloc need cast the returned pointer to the original variable, which 
+		// this pointer might be assigned. 
 		for (Value::const_user_iterator begin = call->user_begin(), end = call->user_end();
 			begin != end;){
 				if (const BitCastInst *bitCastInst = dyn_cast<BitCastInst>(*begin++)) {
 					aux = static_cast<Value *>(const_cast<BitCastInst *>(bitCastInst));
 				}
 			}
+		info.vectorMemoryClass.insertMalloc(call,aux,targetLibraryInfo);
 	}
 }
-///Check if a value corresponds to a malloc/new or free/delete call.
-///If so, we store the result.
-void countAllocates(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo){
+
+/**Check if a Value is a call to malloc/free or new/delete function.
+If the callInstance is stored, with its correspondent Variable on
+the class which contains the function information.
+*/
+void countMemoryFunctions(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo, const DataLayout &dataLayout){
 	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
-		extractValue(&val,targetLibraryInfo);
+		bitcastMallocValue(&val,targetLibraryInfo,info);
+		if (CallInst * call = dyn_cast<CallInst>(&val) ){
+			Value * constant = call->getOperand(0);
+			if ( ConstantInt * cons= dyn_cast <ConstantInt>(constant) ){
+				info.mem.size+=cons->getSExtValue();
+			}
+		}
 	}
-	if ( isFreeCall ( &val,&targetLibraryInfo ) ){
-		extractFreeValueFromLoad(&val);
+	if ( isFreeCall (&val, &targetLibraryInfo) ){
+		if ( CallInst * call = dyn_cast<CallInst>(&val) ) {
+			info.vectorMemoryClass.insertFree(call, varmap.getOriginalValue(call->getArgOperand(0)), targetLibraryInfo);
+		}
 	}
-	 	
 }
-///Iterate over the function's instructions
-///to get useful information
+
+/**Analyze functions called by other functions looking for mallocs/free or news/deletes 
+related with the caller function.
+Note that we need pass the class which contains the function information to add the 
+neccessary information to it.
+*/
+void computeFunction(Value * val,FunctionInfo &functionInfo, const DataLayout &dataLayout, TargetLibraryInfo &targetLibraryInfo){
+	if ( CallInst * call = dyn_cast<CallInst>(val) ){
+		Function * function = call->getCalledFunction();
+		int i= 0;
+		for (Function::arg_iterator begin=function->arg_begin(), end=function->arg_end();begin != end;){
+			if (  Value * aux = dyn_cast<Value>(begin) ){
+				varmap.setPair(call->getOperand(i), aux);
+			}
+			i++;
+			begin++;
+		}
+		unsigned op;
+		for ( BasicBlock &BB : *function){
+			for ( Instruction &I : BB ){
+				op=I.getOpcode();
+				switch(op){
+					case Instruction::Call:
+						if ( Value *value = dyn_cast<Value>(&I) ){
+						  countMemoryFunctions(*value,functionInfo,targetLibraryInfo,dataLayout);
+							 computeFunction(value, functionInfo,dataLayout,targetLibraryInfo);
+						}
+					break;
+				case Instruction::BitCast:
+					if ( BitCastInst * bitCastInst = dyn_cast<BitCastInst>(&I) ){
+						if ( Value * aux = varmap.getOriginalValue(bitCastInst->getOperand(0)))
+							varmap.setPair(aux, bitCastInst);
+						else
+							varmap.setPair(bitCastInst->getOperand(0), bitCastInst);
+					}
+					
+				break;
+				case Instruction::Load:
+					if ( LoadInst * loadInst = dyn_cast<LoadInst>(&I) ){
+						if ( Value * aux = varmap.getOriginalValue(loadInst->getOperand(0)))
+							varmap.setPair(aux,loadInst);
+						else
+							varmap.setPair(loadInst->getOperand(0), loadInst);
+					}
+				break;
+				case Instruction::Store:
+					if ( StoreInst * storeInst = dyn_cast<StoreInst>(&I) ){
+						if ( storeInst->getOperand(0)->hasName() ){
+							if (Value * aux = varmap.getOriginalValue(storeInst->getOperand(0)))
+								varmap.setPair(aux,storeInst->getOperand(1));
+							else
+								varmap.setPair(storeInst->getOperand(0),storeInst->getOperand(1));
+						}
+						else
+							varmap.setPair(storeInst->getOperand(1),storeInst->getOperand(0));
+					}
+					default:
+					break; 
+				}
+			}
+		}
+	}
+}
+
+/**Iterate over the function's instructions
+to get useful information*/
 bool Cxt001Pass::runOnFunction(Function &F) {
+	TargetLibraryInfoImpl targetLibraryInfoImpl = TargetLibraryInfoImpl(triple);
+	TargetLibraryInfo targetLibraryInfo = TargetLibraryInfo(targetLibraryInfoImpl);
   FunctionInfo functionInfo; //Element for funOpVector
   functionInfo.setFunId( funCounter );
   funCounter++;
@@ -86,17 +138,14 @@ bool Cxt001Pass::runOnFunction(Function &F) {
   functionInfo.setFunOps( 0 ); //KPI_1: Operations per function counter
   unsigned op;
   for (BasicBlock &BB : F) {
-		Module *M=BB.getModule();
-		Twine twine=Twine(M->getTargetTriple());
-		Triple t = Triple(twine);
-		TargetLibraryInfoImpl targetLibraryInfoImpl = TargetLibraryInfoImpl(t);
-		TargetLibraryInfo targetLibraryInfo = TargetLibraryInfo(targetLibraryInfoImpl);
     for (Instruction &I : BB) {
       op=I.getOpcode();
 	    switch(op) {
 				case Instruction::Call:
-					if ( Value *value = dyn_cast<Value>(&I) )
-						countAllocates(*value,functionInfo,targetLibraryInfo);
+					if ( Value *value = dyn_cast<Value>(&I) ){
+						countMemoryFunctions(*value,functionInfo,targetLibraryInfo,module->getDataLayout());
+						computeFunction(value, functionInfo,module->getDataLayout(),targetLibraryInfo);
+					}
 				break;
 				case Instruction::FMul:
 					functionInfo.f.fmul++;
@@ -123,19 +172,23 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 					functionInfo.f.ftotals++;
 				break;
 				case Instruction::BitCast:
-					if ( std::get<0>(auxFree) )
-						if ( BitCastInst * bitCastInst = dyn_cast<BitCastInst>(&I))
-							if ( std::get<0>(auxFree) == bitCastInst->llvm::User::getOperand(0) )
-								std::get<0>(auxFree) = static_cast<Value *>(const_cast<BitCastInst *>(bitCastInst)); 		
+					if ( BitCastInst * bitCastInst = dyn_cast<BitCastInst>(&I) ){
+						varmap.setPair(bitCastInst->getOperand(0), bitCastInst);
+					}
+					
 				break;
 				case Instruction::Load:
-					if (LoadInst * load = dyn_cast<LoadInst>(&I)){ 
-						std::get<0>(auxFree) = static_cast<Value *>(const_cast<LoadInst *>(load));
-						std::get<1>(auxFree) = load->getOperand(0);
+					if ( LoadInst * loadInst = dyn_cast<LoadInst>(&I) ){
+						varmap.setPair(loadInst->getOperand(0), loadInst);
 					}
 				break;
 				case Instruction::Store:
-					extractMallocValueFromStore(I);
+					if ( StoreInst * storeInst = dyn_cast<StoreInst>(&I) ){
+						if ( storeInst->getOperand(0)->hasName() )
+							varmap.setPair(storeInst->getOperand(0),storeInst->getOperand(1));
+						else
+							varmap.setPair(storeInst->getOperand(1),storeInst->getOperand(0));
+					}
 				default:
 				break; 
 		} 
@@ -143,12 +196,16 @@ bool Cxt001Pass::runOnFunction(Function &F) {
     }
   }
   functionOperationsVector.push_back(functionInfo); //Insert in funOpVector 
+	for ( pair<Value *, Value *> par : varmap.variablesMap ){
+		functionInfo.vectorMemoryClass.insertMallocProgramVariable(par.first,par.second);
+	}
   return false;
 }
 
 void Cxt001Pass::printTotals(){
 	int tops=0;
 	int fops=0;
+	int bytesTotales;
 	int i=0;
 	cout << "Datos por funcion" << "\n";
 	for ( FunctionInfo f : functionOperationsVector ){
@@ -156,15 +213,21 @@ void Cxt001Pass::printTotals(){
 		cout << "Function: " << f.getName() << "\n";
 		cout << "Numero total de operaciones: " << f.getFunOps() << "\n";
 		cout << "Número total de operaciones en punto flotante: " << f.f.ftotals << "\n";
+		cout << "Bytes reservados por la función: " << f.mem.size << "\n";
+		f.vectorMemoryClass.debug();
+		bytesTotales+=f.mem.size;
 		tops+=f.getFunOps();
 		fops+=f.f.ftotals;
 	}
+
 	cout << "\n" <<  "Datos globales: " << "\n";
+	cout << "Reserva de memoria total: " << bytesTotales << "\n";
 	cout << "Número de instrucciones totales: " << tops << "\n";
 	cout << "Número de instrucciones en punto flotante: " << fops << "\n";
 	cout << "Media de instrucciones por función: " << tops/i << "\n";
 	cout << "Media de instrucciones en punto flotante por instrucción: " << fops/i << "\n";
 }
+
 ///Prints the useful class values
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "For module: " << M->getName() << "\n";
