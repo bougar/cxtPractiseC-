@@ -12,17 +12,9 @@
 
 using namespace llvm;
 using namespace std;
+//The next variable store correspondences between temporary and not temporary variables
 VariableMap varmap;
-struct values {
-	Value * param;
-	Value * temp;
-};
 char Cxt001Pass::ID = 0;
-
-//With the next variable we trace the free value.
-//The second element of the tuple contains a program variable pointer
-//while the first contain a temporary value, which represent a pogram
-//vaeriable bitcased
 
 void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will not invalidate any analysis already built on the IR
@@ -31,7 +23,10 @@ void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.addRequiredTransitive<LoopInfoWrapperPass>();
 }
 
-void extractMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo,FunctionInfo &info){
+/**
+This procedure store the last instruction inside a Call.
+*/
+void bitcastMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo,FunctionInfo &info){
 	Value * aux = NULL;
 	if (const CallInst * call = dyn_cast<CallInst>(val) ){
 		aux = static_cast<Value *>(val);
@@ -47,13 +42,13 @@ void extractMallocValue(Value *val,TargetLibraryInfo targetLibraryInfo,FunctionI
 	}
 }
 
-///Check if a value corresponds to a malloc/new or free/delete call.
-///If so, we store the result.
-///It update the size requested by mallocs in a function;
-
+/**Check if a Value is a call to malloc/free or new/delete function.
+If the callInstance is stored, with its correspondent Variable on
+the class which contains the function information.
+*/
 void countMemoryFunctions(Value &val,FunctionInfo &info, TargetLibraryInfo &targetLibraryInfo, const DataLayout &dataLayout){
 	if ( isMallocLikeFn( &val,&targetLibraryInfo,false ) ){
-		extractMallocValue(&val,targetLibraryInfo,info);
+		bitcastMallocValue(&val,targetLibraryInfo,info);
 		if (CallInst * call = dyn_cast<CallInst>(&val) ){
 			Value * constant = call->getOperand(0);
 			if ( ConstantInt * cons= dyn_cast <ConstantInt>(constant) ){
@@ -68,7 +63,11 @@ void countMemoryFunctions(Value &val,FunctionInfo &info, TargetLibraryInfo &targ
 	}
 }
 
-
+/**Analyze functions called by other functions looking for mallocs/free or news/deletes 
+related with the caller function.
+Note that we need pass the class which contains the function information to add the 
+neccessary information to it.
+*/
 void computeFunction(Value * val,FunctionInfo &functionInfo, const DataLayout &dataLayout, TargetLibraryInfo &targetLibraryInfo){
 	if ( CallInst * call = dyn_cast<CallInst>(val) ){
 		Function * function = call->getCalledFunction();
@@ -127,8 +126,8 @@ void computeFunction(Value * val,FunctionInfo &functionInfo, const DataLayout &d
 	}
 }
 
-///Iterate over the function's instructions
-///to get useful information
+/**Iterate over the function's instructions
+to get useful information*/
 bool Cxt001Pass::runOnFunction(Function &F) {
 	TargetLibraryInfoImpl targetLibraryInfoImpl = TargetLibraryInfoImpl(triple);
 	TargetLibraryInfo targetLibraryInfo = TargetLibraryInfo(targetLibraryInfoImpl);
@@ -228,6 +227,7 @@ void Cxt001Pass::printTotals(){
 	cout << "Media de instrucciones por función: " << tops/i << "\n";
 	cout << "Media de instrucciones en punto flotante por instrucción: " << fops/i << "\n";
 }
+
 ///Prints the useful class values
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
   O << "For module: " << M->getName() << "\n";
