@@ -7,8 +7,13 @@
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/Function.h"
+#include <sys/ioctl.h>
 #include <tuple>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <stdio.h>
+#include <unistd.h>
 
 using namespace llvm;
 using namespace std;
@@ -227,8 +232,53 @@ void Cxt001Pass::printTotals(){
 	cout << "Media de instrucciones por función: " << tops/i << "\n";
 	cout << "Media de instrucciones en punto flotante por instrucción: " << fops/i << "\n";
 }
+void printStripe(int winsize){//Prints a line of hyphen characters (-)
+	int i;
+	if (winsize==62 or winsize==68 or winsize==65) cout << "-";
+	if (winsize<62 or winsize==64) cout << "--";
+	for (i = 0; i < winsize-2; i++){
+		cout << "-";
+		}
+	cout << "\n";
+	}
+void printHeaderElement(string element, int totalspace){ //Prints formated header element
+	int len = element.size();
+	int firstspace = (totalspace-len)/2;
+	int secondspace = totalspace-len-firstspace;
+	if(len >= totalspace) {
+		firstspace = 0; secondspace = 0;
+	}
+	cout << left << std::setw(firstspace) << std::setfill(' ') << "|";
+	cout << element;
+	cout << right << std::setw(secondspace) << std::setfill(' ') << "|";
+	}
+void printFirstHeader(){  //Prints header for the first table. (Function report)
+	struct winsize size;
+	int winsize, space, surplusspace;
+	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets window size from terminal in linux OS
+	winsize = size.ws_col; //70 aprox is fine
+	space = winsize/4;
+	surplusspace = winsize % 4;
+	cout << "Function Report: \n";
+	printStripe(winsize);
+	printHeaderElement("Nombre", space);
+	printHeaderElement("Nº Ops", space);
+	printHeaderElement("Bytes reservados", space+surplusspace);
+	printHeaderElement("Nº Float Ops", space);
+	cout << endl;
+	printStripe(winsize);
+	cout << endl;
+}
+
 
 ///Prints the useful class values
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
-  O << "For module: " << M->getName() << "\n";
+	string modname = M->getName();
+	cout << "For module: " << modname << "\n";
+	printFirstHeader();
+    //printFirstTable(); Pendiente
+    //printSecondHeader(); Pendiente
+    //printSecondTable(); Pendiente
+    //printGlobalInformation(); PARA ESTO IGUAL SIRVE printTotals()
+    
 }

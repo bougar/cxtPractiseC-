@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
   pm.run(*Mod);
 
   pass->print(llvm::dbgs(), Mod.get());
-	pass->printTotals();
+	//pass->printTotals();
 
   return 0;
 }

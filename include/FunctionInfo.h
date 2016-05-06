@@ -32,8 +32,8 @@ struct Flotantes {
 
 class FunctionInfo {
 	private:
-		int funId = 0;
-		string name; 
+		int funId = 0; //Function ID
+		string name;  //Function's name
 		unsigned funOps = 0; //KPI_1: Operations per function counter
 	public:
 		VectorMemoryClass vectorMemoryClass;
@@ -52,4 +52,5 @@ class FunctionInfo {
 		string getName(){return name;}
 		unsigned getFunOps(){return funOps;}
 		void increaseFunOps(){funOps++;}
+		
 };
