@@ -275,11 +275,11 @@ void Cxt001Pass::printFirstTable(){  //Prints the first table. (Function report)
 	winsize = size.ws_col; //window width size
 	space = winsize/4;
 	surplusspace = winsize % 4;
-	cout << "Function Report: \n";
+	cout << "Datos por funcion: \n";
 	printStripe(winsize);
 	printTableElement("Nombre", space+surplusspace);
 	printTableElement("Num Ops", space);
-	printTableElement("Bytes reservados", space);
+	printTableElement("Mem Dinamica", space);
 	printTableElement("Num Float Ops", space);
 	cout << endl;
 	printStripe(winsize);
@@ -295,8 +295,54 @@ void Cxt001Pass::printFirstTable(){  //Prints the first table. (Function report)
 				printTableElement(nflops, space);
 				cout << endl;
 				printStripe(winsize);
-		}
+	}
+	cout << endl;
+	cout << endl;
 }
+
+void Cxt001Pass::printSecondTable(){  //Prints the first table. (Function report)
+	struct winsize size;
+	string name, fadds, fsubs, fmuls, fdivs, fmods, fcmp;
+	int winsize, space, surplusspace;
+	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
+	winsize = size.ws_col; //window width size
+	space = winsize/7;
+	surplusspace = winsize % 7;
+	cout << "Operaciones en punto flotante por funcion: \n";
+	printStripe(winsize);
+	printTableElement("Nombre", space+surplusspace);
+	printTableElement("Sumas", space);
+	printTableElement("Restas", space);
+	printTableElement("Multiplicaciones", space);
+	printTableElement("Divisiones", space);
+	printTableElement("Restos(Mod)", space);
+	printTableElement("Comparaciones", space);
+	cout << endl;
+	printStripe(winsize);
+	//Header ends, body starts
+	for (FunctionInfo fun : functionOperationsVector){ //For each function prints information
+				name = fun.getName();
+				fadds = intToString(fun.f.fadd);
+				fsubs = intToString(fun.f.fsub);
+				fmuls = intToString(fun.f.fmul);
+				fdivs = intToString(fun.f.fdiv);
+				fmods = intToString(fun.f.frem);
+				fcmp = intToString(fun.f.fcmp);
+				printTableElement(name, space+surplusspace);
+				printTableElement(fadds, space);
+				printTableElement(fsubs, space);
+				printTableElement(fmuls, space);
+				printTableElement(fdivs, space);
+				printTableElement(fmods, space);
+				printTableElement(fcmp, space);
+				cout << endl;
+				printStripe(winsize);
+	}
+	cout << endl;
+	cout << endl;
+}
+
+
 
 
 ///Prints the useful class values

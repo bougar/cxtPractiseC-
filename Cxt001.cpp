@@ -114,9 +114,7 @@ int main(int argc, char *argv[]) {
 
   pass->print(llvm::dbgs(), Mod.get());
   pass->printFirstTable();
-      //pass->printSecondHeader(); Pendiente
-    //pass->printSecondTable(); Pendiente
-	//pass->PrintMemoryHeader(); Pendiente
+  pass->printSecondTable();
 	//pass->PrintMemoryTable(); Pendiente
     //pass->printGlobalInformation(); PARA ESTO IGUAL SIRVE printTotals()
 	//pass->printTotals();
