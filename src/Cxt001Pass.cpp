@@ -275,7 +275,6 @@ void Cxt001Pass::printFirstTable(){  //Prints the first table. (Function report)
 	winsize = size.ws_col; //window width size
 	space = winsize/4;
 	surplusspace = winsize % 4;
-	cout << space << "  - " << surplusspace;
 	cout << "Function Report: \n";
 	printStripe(winsize);
 	printTableElement("Nombre", space+surplusspace);
