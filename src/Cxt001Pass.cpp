@@ -8,6 +8,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/Function.h"
 #include <sys/ioctl.h>
+#include <string>
 #include <tuple>
 #include <iostream>
 #include <sstream>
@@ -232,53 +233,76 @@ void Cxt001Pass::printTotals(){
 	cout << "Media de instrucciones por función: " << tops/i << "\n";
 	cout << "Media de instrucciones en punto flotante por instrucción: " << fops/i << "\n";
 }
+
+
+string intToString(int i){
+    std::stringstream ss;
+    std::string s;
+    ss << i;
+    s = ss.str();
+    return s;
+}
+
+
 void printStripe(int winsize){//Prints a line of hyphen characters (-)
 	int i;
-	if (winsize==62 or winsize==68 or winsize==65) cout << "-";
-	if (winsize<62 or winsize==64) cout << "--";
-	for (i = 0; i < winsize-2; i++){
+	for (i = 0; i < winsize; i++){
 		cout << "-";
 		}
 	cout << "\n";
 	}
-void printHeaderElement(string element, int totalspace){ //Prints formated header element
+void printTableElement(string element, int totalspace){ //Prints formated header element
 	int len = element.size();
+	if(len >= totalspace-2) { //if element is larger than space, asuming 2 chars from "|" separator
+		element = element.substr(0, totalspace-5); //2 chars from "|" separators and 3 from "..."
+		element.append("...");
+		len = element.size();
+	}
 	int firstspace = (totalspace-len)/2;
 	int secondspace = totalspace-len-firstspace;
-	if(len >= totalspace) {
-		firstspace = 0; secondspace = 0;
-	}
+
 	cout << left << std::setw(firstspace) << std::setfill(' ') << "|";
 	cout << element;
 	cout << right << std::setw(secondspace) << std::setfill(' ') << "|";
-	}
-void printFirstHeader(){  //Prints header for the first table. (Function report)
+}
+	
+
+void Cxt001Pass::printFirstTable(){  //Prints the first table. (Function report)
 	struct winsize size;
+	string name, nops, mem, nflops;
 	int winsize, space, surplusspace;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets window size from terminal in linux OS
-	winsize = size.ws_col; //70 aprox is fine
+	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
+	winsize = size.ws_col; //window width size
 	space = winsize/4;
 	surplusspace = winsize % 4;
+	cout << space << "  - " << surplusspace;
 	cout << "Function Report: \n";
 	printStripe(winsize);
-	printHeaderElement("Nombre", space);
-	printHeaderElement("Nº Ops", space);
-	printHeaderElement("Bytes reservados", space+surplusspace);
-	printHeaderElement("Nº Float Ops", space);
+	printTableElement("Nombre", space+surplusspace);
+	printTableElement("Num Ops", space);
+	printTableElement("Bytes reservados", space);
+	printTableElement("Num Float Ops", space);
 	cout << endl;
 	printStripe(winsize);
-	cout << endl;
+	//Header ends, body starts
+	for (FunctionInfo fun : functionOperationsVector){ //For each function prints information
+				name = fun.getName();
+				nops = intToString(fun.getFunOps());
+				mem = intToString(fun.mem.size);
+				nflops = intToString(fun.f.ftotals);
+				printTableElement(name, space+surplusspace);
+				printTableElement(nops, space);
+				printTableElement(mem, space);
+				printTableElement(nflops, space);
+				cout << endl;
+				printStripe(winsize);
+		}
 }
 
 
 ///Prints the useful class values
 void Cxt001Pass::print(raw_ostream &O, const Module *M) const {
 	string modname = M->getName();
-	cout << "For module: " << modname << "\n";
-	printFirstHeader();
-    //printFirstTable(); Pendiente
-    //printSecondHeader(); Pendiente
-    //printSecondTable(); Pendiente
-    //printGlobalInformation(); PARA ESTO IGUAL SIRVE printTotals()
-    
+	cout << endl;
+	cout << "For module: " << modname << "\n";    
 }

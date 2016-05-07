@@ -24,6 +24,7 @@ public:
 
   void print(llvm::raw_ostream &O, const llvm::Module *M) const override;
 	void printTotals();
+	void printFirstTable();
 
 	
 	private:
