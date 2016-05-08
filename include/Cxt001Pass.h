@@ -26,7 +26,7 @@ public:
 	void printTotals();
 	void printFirstTable();
 	void printSecondTable();
-
+	void printMemoryTable();
 	
 	private:
 		const llvm::Module * module;

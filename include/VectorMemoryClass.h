@@ -103,6 +103,10 @@ class VectorMemoryClass {
 		}
 	}
 	
+	
+	vector<MemoryClass *> * getMemoryVector(){return memoryClassVector; }
+	
+	
 	private:
 		static MemoryClass * getMemoryClassFromValue(vector<MemoryClass *> * vector,const Value * val){
 			for (MemoryClass * m : *vector){

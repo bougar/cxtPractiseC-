@@ -22,6 +22,7 @@ using namespace std;
 VariableMap varmap;
 char Cxt001Pass::ID = 0;
 
+
 void Cxt001Pass::getAnalysisUsage(AnalysisUsage &AU) const {
   // Specifies that the pass will not invalidate any analysis already built on the IR
   AU.setPreservesAll();
@@ -235,7 +236,7 @@ void Cxt001Pass::printTotals(){
 }
 
 
-string intToString(int i){
+string intToString(int i){ //Converts int to string
     std::stringstream ss;
     std::string s;
     ss << i;
@@ -273,6 +274,7 @@ void Cxt001Pass::printFirstTable(){  //Prints the first table. (Function report)
 	int winsize, space, surplusspace;
 	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
 	winsize = size.ws_col; //window width size
+	if (winsize==0) winsize = 90; //If output is redirected
 	space = winsize/4;
 	surplusspace = winsize % 4;
 	cout << "Datos por funcion: \n";
@@ -306,6 +308,7 @@ void Cxt001Pass::printSecondTable(){  //Prints the first table. (Function report
 	int winsize, space, surplusspace;
 	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
 	winsize = size.ws_col; //window width size
+	if (winsize==0) winsize = 133; //If output is redirected
 	space = winsize/7;
 	surplusspace = winsize % 7;
 	cout << "Operaciones en punto flotante por funcion: \n";
@@ -342,7 +345,55 @@ void Cxt001Pass::printSecondTable(){  //Prints the first table. (Function report
 	cout << endl;
 }
 
-
+void Cxt001Pass::printMemoryTable(){
+	struct winsize size;
+	const CallInst * malloc;
+	const CallInst * free;
+	const Value * val;
+	vector<MemoryClass *> * memlist;
+	string a;
+	int winsize, space, surplusspace;
+	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
+	winsize = size.ws_col; //window width size
+	if (winsize==0) winsize = 70; //If output is redirected
+	space = winsize/5;
+	surplusspace = winsize % 5;
+	cout << "Variables por función: \n";
+	printStripe(winsize);
+	cout << endl;
+	//Print header for each function
+	for (FunctionInfo fun : functionOperationsVector){ //For each function iterate it's memoryClassVector
+		//Print header of function -> Funcion || Nombre || No Malloc || No Free || Malloc&Free
+		cout << "Funcion: " << fun.getName() << endl;
+		printStripe(winsize);
+		printTableElement("Variable", space*2+surplusspace);
+		printTableElement("NoMalloc", space);
+		printTableElement("NoFree", space);
+		printTableElement("Malloc&Free", space);
+		cout << endl;
+		printStripe(winsize);
+		memlist = fun.vectorMemoryClass.getMemoryVector();
+		for (MemoryClass * m : *memlist){ 
+			malloc = m->getMalloc();
+			free = m->getFree();
+			val = m->getValue();
+			//print variable in line
+			if ( val != NULL ) printTableElement(val->getName(), space*2+surplusspace);
+				else printTableElement("???", space*2+surplusspace);
+			if ( malloc == NULL ) printTableElement("X", space);
+				else printTableElement(" ", space);
+			if ( free == NULL )printTableElement("X", space);
+				else printTableElement(" ", space);
+			if ((free != NULL) and (malloc != NULL) ) printTableElement("X", space);
+				else printTableElement(" ", space);
+			cout << endl;
+			printStripe(winsize);
+		}
+		cout << endl;
+		cout << endl;
+		
+	}
+}
 
 
 ///Prints the useful class values
