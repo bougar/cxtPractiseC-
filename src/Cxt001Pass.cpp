@@ -214,14 +214,14 @@ void Cxt001Pass::printTotals(){
 	int fops=0;
 	int bytesTotales;
 	int i=0;
-	cout << "Datos por funcion" << "\n";
+	//cout << "Datos por funcion" << "\n";
 	for ( FunctionInfo f : functionOperationsVector ){
 		i++;
-		cout << "Function: " << f.getName() << "\n";
+		/*cout << "Function: " << f.getName() << "\n";
 		cout << "Numero total de operaciones: " << f.getFunOps() << "\n";
 		cout << "Número total de operaciones en punto flotante: " << f.f.ftotals << "\n";
 		cout << "Bytes reservados por la función: " << f.mem.size << "\n";
-		f.vectorMemoryClass.debug();
+		f.vectorMemoryClass.debug();*/
 		bytesTotales+=f.mem.size;
 		tops+=f.getFunOps();
 		fops+=f.f.ftotals;
@@ -272,17 +272,17 @@ void Cxt001Pass::printFirstTable(){  //Prints the first table. (Function report)
 	struct winsize size;
 	string name, nops, mem, nflops;
 	int winsize, space, surplusspace;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
-	winsize = size.ws_col; //window width size
-	if (winsize==0) winsize = 90; //If output is redirected
+	int e = ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
+	if (e==0) winsize = size.ws_col; //window width size
+		else winsize = 90; //If output is redirected
 	space = winsize/4;
 	surplusspace = winsize % 4;
-	cout << "Datos por funcion: \n";
+	cout << "Function report: \n";
 	printStripe(winsize);
-	printTableElement("Nombre", space+surplusspace);
+	printTableElement("Function", space+surplusspace);
 	printTableElement("Num Ops", space);
-	printTableElement("Mem Dinamica", space);
-	printTableElement("Num Float Ops", space);
+	printTableElement("Dynamic mem", space);
+	printTableElement("Num Flops", space);
 	cout << endl;
 	printStripe(winsize);
 	//Header ends, body starts
@@ -306,20 +306,20 @@ void Cxt001Pass::printSecondTable(){  //Prints the first table. (Function report
 	struct winsize size;
 	string name, fadds, fsubs, fmuls, fdivs, fmods, fcmp;
 	int winsize, space, surplusspace;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
-	winsize = size.ws_col; //window width size
-	if (winsize==0) winsize = 133; //If output is redirected
+	int e = ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
+	if (e==0) winsize = size.ws_col; //window width size
+		else winsize = 133; //If output is redirected
 	space = winsize/7;
 	surplusspace = winsize % 7;
-	cout << "Operaciones en punto flotante por funcion: \n";
+	cout << "Float point operations per function report: \n";
 	printStripe(winsize);
-	printTableElement("Nombre", space+surplusspace);
-	printTableElement("Sumas", space);
-	printTableElement("Restas", space);
-	printTableElement("Multiplicaciones", space);
-	printTableElement("Divisiones", space);
-	printTableElement("Restos(Mod)", space);
-	printTableElement("Comparaciones", space);
+	printTableElement("Function", space+surplusspace);
+	printTableElement("Adds", space);
+	printTableElement("Subs", space);
+	printTableElement("Multiplications", space);
+	printTableElement("Divs", space);
+	printTableElement("Mods", space);
+	printTableElement("Comparations", space);
 	cout << endl;
 	printStripe(winsize);
 	//Header ends, body starts
@@ -353,18 +353,18 @@ void Cxt001Pass::printMemoryTable(){
 	vector<MemoryClass *> * memlist;
 	string a;
 	int winsize, space, surplusspace;
-	ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
-	winsize = size.ws_col; //window width size
-	if (winsize==0) winsize = 70; //If output is redirected
+	int e = ioctl(STDOUT_FILENO,TIOCGWINSZ,&size); //Gets information from terminal process in linux OS
+	if (e==0) winsize = size.ws_col; //window width size
+		else winsize = 70; //If output is redirected
 	space = winsize/5;
 	surplusspace = winsize % 5;
-	cout << "Variables por función: \n";
+	cout << "Function dynamic variables: \n";
 	printStripe(winsize);
 	cout << endl;
 	//Print header for each function
 	for (FunctionInfo fun : functionOperationsVector){ //For each function iterate it's memoryClassVector
 		//Print header of function -> Funcion || Nombre || No Malloc || No Free || Malloc&Free
-		cout << "Funcion: " << fun.getName() << endl;
+		cout << "Function: " << fun.getName() << endl;
 		printStripe(winsize);
 		printTableElement("Variable", space*2+surplusspace);
 		printTableElement("NoMalloc", space);
