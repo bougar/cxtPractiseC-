@@ -212,7 +212,7 @@ bool Cxt001Pass::runOnFunction(Function &F) {
 void Cxt001Pass::printTotals(){
 	int tops=0;
 	int fops=0;
-	int bytesTotales;
+	int bytesTotales=0;
 	int i=0;
 	//cout << "Datos por funcion" << "\n";
 	for ( FunctionInfo f : functionOperationsVector ){

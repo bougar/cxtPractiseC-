@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
   pass->printSecondTable();
   pass->printMemoryTable();
     //pass->printGlobalInformation(); PARA ESTO IGUAL SIRVE printTotals()
-	//pass->printTotals();
+	pass->printTotals();
 
   return 0;
 }
